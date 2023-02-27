@@ -14,15 +14,6 @@ const cookieParser = require("cookie-parser");
 const { getMeta } = require("./lib");	
 const mailer = require("nodemailer");
 const fs = require("fs");
-let transporter = mailer.createTransport({
-      host: "YOUR_SMTP",
-      port: 465,
-      secure: true,
-      auth: {
-        user: "YOUR_EMAIL",
-        pass: "YOUR_PASSWD",
-      },
-    });
 const ROOT = pathJoin(__dirname, "views");
 const STATIC_ROOT = pathJoin(__dirname, "public");
 var useragent = require('express-useragent');
@@ -38,7 +29,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(STATIC_ROOT));
 app.use(async (req, res, next) => {
-  res.locals.titleweb = "Tikly";
+  res.locals.titleweb = "Sanzy Downloader";
   res.locals.req = req;
   res.locals.ipAddr = req.headers["cf-connecting-ip"] || req.ip;
   res.locals.ua = req.useragent;
@@ -95,25 +86,6 @@ app.get("/privacy", async (req, res) => {
 
 app.get("/terms", async (req, res) => {
   res.render("terms");
-});
-
-app.post("/contact", async (req, res) => {
-  try {
-    let { name, email, message } = req.body;
-
-    let mail = {
-      from: `"${name}" <${email}>`,
-      to: "EMAIL_RECEIVER",
-      subject: "Tikly Contact",
-      text: `===== Tikly Contacts =====\n\nFrom: ${email}\nName: ${name}\nMessage: ${message}\n\n===== Automated Send Mail =====`,	
-    };
-
-    await transporter.sendMail(mail);
-    res.render("contact", { success: true })
-  } catch (err) {
-    console.log(err);
-    res.render("contact", { success: false })
-  }
 });
 
 app.post("/download", async (req, res) => {
